@@ -492,7 +492,7 @@ export default function App() {
 
       {/* Tiny Signature Footer */}
       <footer className="py-6 text-center text-[10px] font-mono tracking-widest text-neutral-400 uppercase shrink-0">
-        &copy; 2026 DEVCIPTIFY &bull; POWERED BY GITHUB GRAPHQL
+        &copy; 2026 DEVCIPTIFY
       </footer>
 
       {/* Floating Micro-Toast Notification */}
