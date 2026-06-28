@@ -80,14 +80,15 @@ export default function App() {
   };
 
   const handleExportPng = async () => {
-    const container = document.getElementById("receipt-container");
+    const container = document.getElementById("receipt-capture-area") || document.getElementById("receipt-container");
     if (!container || !receiptData) return;
 
     try {
       setIsExporting(true);
       const dataUrl = await htmlToImage.toPng(container, {
-        pixelRatio: 3, // Ultra-sharp print-ready quality
+        pixelRatio: 2, // 2x density is crisp and beautiful without massive files or aggressive zoom
         cacheBust: true,
+        backgroundColor: "#f3f4f6", // Matches original theme background for seamless margins
       });
 
       const link = document.createElement("a");
@@ -155,14 +156,15 @@ export default function App() {
     e?.stopPropagation();
     if (!receiptData) return;
 
-    const container = document.getElementById("receipt-container");
+    const container = document.getElementById("receipt-capture-area") || document.getElementById("receipt-container");
     if (!container) return;
 
     try {
       setIsExporting(true);
       const blob = await htmlToImage.toBlob(container, {
-        pixelRatio: 2.5,
+        pixelRatio: 2, // 2x density provides sharp resolution for social media platforms
         cacheBust: true,
+        backgroundColor: "#f3f4f6", // Solid background color to prevent iOS black transparent image issue
       });
       setIsExporting(false);
 
@@ -447,9 +449,11 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Receipt Wrapper with custom elegant shadow */}
-              <div className="shadow-[0_20px_50px_rgba(0,0,0,0.12)] rounded-3xl overflow-hidden bg-[#f3f1ec]">
-                <Receipt data={receiptData} />
+              {/* Receipt Export Wrapper with padding to zoom out and prevent shadow clipping */}
+              <div id="receipt-capture-area" className="p-8 bg-[#f3f4f6] rounded-3xl flex justify-center items-center">
+                <div className="shadow-[0_20px_50px_rgba(0,0,0,0.12)] rounded-3xl overflow-hidden bg-[#f3f1ec]">
+                  <Receipt data={receiptData} />
+                </div>
               </div>
 
               {/* Interactive Control Deck directly below */}
