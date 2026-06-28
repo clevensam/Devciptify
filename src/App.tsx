@@ -449,10 +449,15 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Receipt Export Wrapper with padding to zoom out and prevent shadow clipping */}
-              <div id="receipt-capture-area" className="p-8 bg-[#f3f4f6] rounded-3xl flex justify-center items-center">
-                <div className="shadow-[0_20px_50px_rgba(0,0,0,0.12)] rounded-3xl overflow-hidden bg-[#f3f1ec]">
-                  <Receipt data={receiptData} />
+              {/* Responsive scaling container to prevent mobile layout overflow and match desktop view */}
+              <div className="w-full flex justify-center items-center overflow-hidden py-1">
+                <div className="scale-[0.78] min-[390px]:scale-[0.86] sm:scale-100 origin-center transition-transform duration-200 my-[-50px] min-[390px]:my-[-30px] sm:my-0 shrink-0">
+                  {/* Receipt Export Wrapper with padding to zoom out and prevent shadow clipping */}
+                  <div id="receipt-capture-area" className="p-8 bg-[#f3f4f6] rounded-3xl flex justify-center items-center">
+                    <div className="shadow-[0_20px_50px_rgba(0,0,0,0.12)] rounded-3xl overflow-hidden bg-[#f3f1ec]">
+                      <Receipt data={receiptData} />
+                    </div>
+                  </div>
                 </div>
               </div>
 
