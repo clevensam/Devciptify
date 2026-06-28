@@ -1,5 +1,5 @@
 {
-  "name": "Devciptify",
+  "name": "Gitslip",
   "description": "Transforms monthly GitHub activity into a stylized thermal receipt with a 3D thermal printer extrusion animation.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

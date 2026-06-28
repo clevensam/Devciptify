@@ -59,7 +59,7 @@ export default function App() {
       const data: ReceiptData = await res.json();
       setReceiptData(data);
     } catch (err: any) {
-      console.error("[Devciptify] Fetch error:", err);
+      console.error("[Gitslip] Fetch error:", err);
       setError(err.message || "Could not generate receipt. Please try again.");
     } finally {
       setLoading(false);
@@ -79,13 +79,13 @@ export default function App() {
       });
 
       const link = document.createElement("a");
-      link.download = `devciptify-github-${receiptData.username.toLowerCase()}.png`;
+      link.download = `gitslip-github-${receiptData.username.toLowerCase()}.png`;
       link.href = dataUrl;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } catch (err) {
-      console.error("[Devciptify] Export PNG failed:", err);
+      console.error("[Gitslip] Export PNG failed:", err);
     } finally {
       setIsExporting(false);
     }
@@ -112,12 +112,12 @@ export default function App() {
     e?.stopPropagation();
     if (!receiptData) return;
     const shareUrl = `${window.location.origin}?user=${encodeURIComponent(receiptData.username)}`;
-    const shareText = `Check out my GitHub developer receipt on Devciptify! Generated for @${receiptData.username}`;
+    const shareText = `Check out my GitHub developer receipt on Gitslip! Generated for @${receiptData.username}`;
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Devciptify - GitHub Dev Receipt",
+          title: "Gitslip - GitHub Dev Receipt",
           text: shareText,
           url: shareUrl,
         });
@@ -156,14 +156,14 @@ export default function App() {
 
       if (!blob) throw new Error("Could not generate image blob");
 
-      const file = new File([blob], `devciptify-${receiptData.username.toLowerCase()}.png`, { type: "image/png" });
+      const file = new File([blob], `gitslip-${receiptData.username.toLowerCase()}.png`, { type: "image/png" });
 
       // Try file sharing via Web Share API
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           files: [file],
-          title: "Devciptify GitHub Receipt",
-          text: `Check out my GitHub stats on Devciptify! Generated for @${receiptData.username}`,
+          title: "Gitslip GitHub Receipt",
+          text: `Check out my GitHub stats on Gitslip! Generated for @${receiptData.username}`,
         });
         return;
       }
@@ -219,7 +219,7 @@ export default function App() {
               {/* Header Title */}
               <div className="space-y-2">
                 <h1 className="font-sans font-black text-5xl tracking-[0.08em] text-neutral-900 uppercase">
-                  DEVCIPTIFY
+                  GITSLIP
                 </h1>
                 <p className="text-sm font-semibold tracking-widest text-neutral-500 uppercase">
                   GitHub Dev Receipt Generator
@@ -385,7 +385,7 @@ export default function App() {
 
       {/* Tiny Signature Footer */}
       <footer className="py-6 text-center text-[10px] font-mono tracking-widest text-neutral-400 uppercase shrink-0">
-        &copy; 2026 DEVCIPTIFY
+        &copy; 2026 GITSLIP
       </footer>
 
       {/* Floating Micro-Toast Notification */}

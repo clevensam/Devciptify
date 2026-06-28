@@ -149,7 +149,7 @@ app.get("/api/github-receipt/:username", async (req, res) => {
   
   if (!token) {
     // If GITHUB_TOKEN is not configured, fall back to simulated data with an explicit flag
-    console.log(`[Devciptify] GITHUB_TOKEN not configured. Returning simulated data for ${username}.`);
+    console.log(`[Gitslip] GITHUB_TOKEN not configured. Returning simulated data for ${username}.`);
     const simData = generateSimulatedData(username);
     cache.set(username.toLowerCase(), { data: simData, timestamp: Date.now() });
     return res.json(simData);
@@ -211,7 +211,7 @@ app.get("/api/github-receipt/:username", async (req, res) => {
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
-        "User-Agent": "Devciptify-Receipt-Generator"
+        "User-Agent": "Gitslip-Receipt-Generator"
       },
       body: JSON.stringify({
         query,
@@ -221,14 +221,14 @@ app.get("/api/github-receipt/:username", async (req, res) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`[Devciptify] GitHub API error: ${response.status} ${response.statusText}`, errorText);
+      console.error(`[Gitslip] GitHub API error: ${response.status} ${response.statusText}`, errorText);
       throw new Error(`GitHub API returned HTTP ${response.status}`);
     }
 
     const json = await response.json();
     
     if (json.errors && json.errors.length > 0) {
-      console.error("[Devciptify] GraphQL errors:", json.errors);
+      console.error("[Gitslip] GraphQL errors:", json.errors);
       // If the user is not found, or another error, handle it
       const isNotFound = json.errors.some((e: any) => e.type === "NOT_FOUND");
       if (isNotFound) {
@@ -373,7 +373,7 @@ app.get("/api/github-receipt/:username", async (req, res) => {
     return res.json(receiptData);
 
   } catch (error: any) {
-    console.error(`[Devciptify] Server error processing request for ${username}:`, error);
+    console.error(`[Gitslip] Server error processing request for ${username}:`, error);
     return res.status(500).json({ error: error.message || "Internal server error" });
   }
 });
@@ -395,7 +395,7 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`[Devciptify] Express server running at http://0.0.0.0:${PORT}`);
+    console.log(`[Gitslip] Express server running at http://0.0.0.0:${PORT}`);
   });
 }
 
