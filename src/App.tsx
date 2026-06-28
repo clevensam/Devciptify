@@ -25,19 +25,6 @@ export default function App() {
   const [isExporting, setIsExporting] = useState(false);
   const [timeRange, setTimeRange] = useState<"30" | "6" | "all">("30");
   const [shareStatus, setShareStatus] = useState<"idle" | "copied" | "copied_insta" | "copied_tiktok" | "failed">("idle");
-  const [shareDropdownOpen, setShareDropdownOpen] = useState(false);
-
-  // Close share dropdown when clicking outside
-  useEffect(() => {
-    if (!shareDropdownOpen) return;
-    const handleOutsideClick = () => {
-      setShareDropdownOpen(false);
-    };
-    document.addEventListener("click", handleOutsideClick);
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
-  }, [shareDropdownOpen]);
 
   const handleTryDemo = (demoUser: string) => {
     setUsername(demoUser);
@@ -144,7 +131,6 @@ export default function App() {
       await navigator.clipboard.writeText(shareUrl);
       setShareStatus("copied");
       setTimeout(() => setShareStatus("idle"), 3000);
-      setShareDropdownOpen(false);
     } catch (err) {
       console.error("Clipboard copy failed:", err);
       setShareStatus("failed");
@@ -179,7 +165,6 @@ export default function App() {
           title: "Devciptify GitHub Receipt",
           text: `Check out my GitHub stats on Devciptify! Generated for @${receiptData.username}`,
         });
-        setShareDropdownOpen(false);
         return;
       }
     } catch (err) {
@@ -200,7 +185,6 @@ export default function App() {
         setShareStatus("copied");
       }
       setTimeout(() => setShareStatus("idle"), 3000);
-      setShareDropdownOpen(false);
     } catch (err) {
       console.error("Clipboard copy failed:", err);
       setShareStatus("failed");
@@ -344,108 +328,17 @@ export default function App() {
                 </span>
                 <div className="relative flex items-center">
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShareDropdownOpen(!shareDropdownOpen);
-                    }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-neutral-200 text-neutral-700 hover:text-neutral-900 hover:border-neutral-400 active:scale-95 transition-all shadow-sm font-mono text-[10px] font-bold uppercase cursor-pointer"
+                    onClick={(e) => shareImageOrFallback("generic", e)}
+                    disabled={isExporting}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-neutral-200 text-neutral-700 hover:text-neutral-900 hover:border-neutral-400 active:scale-95 transition-all shadow-sm font-mono text-[10px] font-bold uppercase cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Share2 size={12} />
-                    <span>Share</span>
-                  </button>
-
-                  <AnimatePresence>
-                    {shareDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                        transition={{ duration: 0.15, ease: "easeOut" }}
-                        className="absolute right-0 top-full mt-2 w-52 bg-white border border-neutral-200 rounded-xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] py-1.5 z-40"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {/* Share Image Directly */}
-                        <button
-                          onClick={(e) => shareImageOrFallback("generic", e)}
-                          className="w-full text-left flex items-center gap-2.5 px-3 py-2 text-neutral-800 bg-neutral-50 hover:bg-neutral-100 hover:text-neutral-950 transition-colors text-xs font-semibold cursor-pointer border-b border-neutral-100 rounded-t-xl"
-                        >
-                          <Share2 size={13} className="text-neutral-700 animate-pulse" />
-                          <span>Share Image Directly</span>
-                        </button>
-
-                        <div className="my-1" />
-
-                        {/* Twitter / X */}
-                        <a
-                          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                            `Just generated my Devciptify GitHub receipt! Check out my stats: `
-                          )}&url=${encodeURIComponent(
-                            `${window.location.origin}?user=${encodeURIComponent(receiptData.username)}`
-                          )}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => setShareDropdownOpen(false)}
-                          className="flex items-center gap-2.5 px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950 transition-colors text-xs font-medium cursor-pointer"
-                        >
-                          <svg className="w-3.5 h-3.5 fill-current text-neutral-600" viewBox="0 0 24 24">
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                          </svg>
-                          <span>Share on X</span>
-                        </a>
-
-                        {/* LinkedIn */}
-                        <a
-                          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                            `${window.location.origin}?user=${encodeURIComponent(receiptData.username)}`
-                          )}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => setShareDropdownOpen(false)}
-                          className="flex items-center gap-2.5 px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950 transition-colors text-xs font-medium cursor-pointer"
-                        >
-                          <svg className="w-3.5 h-3.5 fill-current text-neutral-600" viewBox="0 0 24 24">
-                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                          </svg>
-                          <span>Share on LinkedIn</span>
-                        </a>
-
-                        {/* Instagram */}
-                        <button
-                          onClick={(e) => shareImageOrFallback("instagram", e)}
-                          className="w-full text-left flex items-center gap-2.5 px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950 transition-colors text-xs font-medium cursor-pointer"
-                        >
-                          <svg className="w-3.5 h-3.5 fill-none stroke-current stroke-[2.2] text-neutral-600" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                          </svg>
-                          <span>Instagram (Share Image)</span>
-                        </button>
-
-                        {/* TikTok */}
-                        <button
-                          onClick={(e) => shareImageOrFallback("tiktok", e)}
-                          className="w-full text-left flex items-center gap-2.5 px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950 transition-colors text-xs font-medium cursor-pointer"
-                        >
-                          <svg className="w-3.5 h-3.5 fill-current text-neutral-600" viewBox="0 0 24 24">
-                            <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.63 4.19 1.12 1.25 2.72 1.93 4.38 2.03v3.82c-1.89-.02-3.73-.72-5.14-2.01-.13-.12-.25-.26-.37-.39v7.86c.04 4.54-3.52 8.41-8.06 8.49-4.9.23-9.13-3.61-9.04-8.52.12-4.47 3.98-8.09 8.46-7.92.51.01 1.01.08 1.5.21v3.91c-1.12-.34-2.35-.14-3.32.53-.98.67-1.54 1.83-1.48 3.02.09 2.13 1.99 3.81 4.13 3.7 2.03-.07 3.63-1.74 3.63-3.77-.01-5.11 0-10.22-.01-15.33z"/>
-                          </svg>
-                          <span>TikTok (Share Image)</span>
-                        </button>
-
-                        <div className="my-1 border-t border-neutral-100" />
-
-                        {/* Copy Link */}
-                        <button
-                          onClick={(e) => handleShareLink(e)}
-                          className="w-full text-left flex items-center gap-2.5 px-3 py-2 text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950 transition-colors text-xs font-medium cursor-pointer"
-                        >
-                          <Share2 size={14} className="text-neutral-600" />
-                          <span>Copy Direct Link</span>
-                        </button>
-                      </motion.div>
+                    {isExporting ? (
+                      <span className="w-3 h-3 border-2 border-neutral-500 border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Share2 size={12} />
                     )}
-                  </AnimatePresence>
+                    <span>{isExporting ? "Sharing..." : "Share"}</span>
+                  </button>
                 </div>
               </div>
 
